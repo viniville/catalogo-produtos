@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" id="bootstrap-css">
+    <link rel="stylesheet" href="css/principal.css">
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>    
+    <script type="text/javascript" src="js/utils.js"></script>
+</head>
+<body> 
+    <div style="margin: 20px 10px 10px 10px" >
+        <h1 id="operacao">Inserção/Alteração de produto</h1>
+        <input type="hidden" id="inputid" value="">
+        <div class="form-group">
+            <label for="inputnome">Nome do produto</label>
+            <input type="text" class="form-control" id="inputnome" placeholder="Nome">
+        </div>
+            <div class="form-group">
+            <label for="inputmarca">Marca do produto</label>
+            <input type="text" class="form-control" id="inputmarca" placeholder="Marca">
+        </div>
+        <div class="form-group">
+            <label for="inputpreco">Preço do produto</label>
+            <input type="text" class="form-control" id="inputpreco" placeholder="Preço">
+        </div>
+        <div class="form-group">
+            <label for="inputsaldo">Saldo do produto</label>
+            <input type="number" class="form-control" id="inputsaldo" placeholder="Saldo" readonly="true">
+        </div>
+        <input type="button" value="Gravar" onclick="javascript:gravarInsAltProduto()">
+        <input type="button" value="Cancelar" onclick="javascript:cancelarInsAltProduto()">
+    </div>    
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        if(validaSessaoAtiva()) {
+            preparaInsertAlterProduto();
+        }
+    });
+</script> 
+</html>

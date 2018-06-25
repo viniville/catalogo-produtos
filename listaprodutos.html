@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" id="bootstrap-css">
+    <link rel="stylesheet" href="css/principal.css">
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>    
+    <script type="text/javascript" src="js/utils.js"></script>
+</head>
+<body> 
+    <div style="margin: 20px 10px 10px 10px" >
+        <h1>Lista de produtos</h1>
+        <input type="button" value="Adicionar produto" onclick="javascript:showAddProduto();" style="margin-bottom: 5px">        
+        <table class="table table-bordered">
+            <tr>
+                <th class="col-md-1">#</th>
+                <th>Nome</th>
+                <th>Marca</th>
+                <th>Preço</th>
+                <th>Saldo</th>            
+            </tr>
+            <tbody id="itens">
+            <tr>
+                <td><input type="button" value="Editar">&nbsp;<input type="button" value="Excluir"></td>
+                <td>Produto A</td>
+                <td>Marca A</td>
+                <td>120,23</td>
+                <td>75</td>
+            </tr>
+            <tr>
+                <td><input type="button" value="Editar">&nbsp;<input type="button" value="Excluir"></td>
+                <td>Produto B</td>
+                <td>Marca B</td>
+                <td>50,32</td>
+                <td>100</td>
+            </tr> 
+            </tbody>   
+        </table>
+    </div> 
+</body>
+<script type="text/javascript">
+    $(document).ready(function(){
+        if(validaSessaoAtiva()) {
+            getHtmlTableProdutos();
+        }
+    });
+</script> 
+</html>
