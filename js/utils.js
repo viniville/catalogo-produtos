@@ -116,9 +116,18 @@ function inicializaApp() {
 }
 
 function login(usuario) {
-    sessionStorage.setItem("usuario_logado", JSON.stringify(usuario));
-    console.log("Login realizado com sucesso!");
-    window.location="listaprodutos.html";
+    
+    sessionStorage.removeItem("usuario_logado");
+
+    if(usuario == null) {
+        console.log("Login inválido");
+        alert("Login inválido");
+    } else {
+        sessionStorage.setItem("usuario_logado", JSON.stringify(usuario));
+        console.log("Login realizado com sucesso! " + usuario);
+        window.location="listaprodutos.html";
+    }
+
 }
 
 function logoff() {
@@ -139,20 +148,9 @@ function validaSessaoAtiva() {
 function validarLogin() {
     let username = document.getElementById('usuario').value;
     let password = document.getElementById('senha').value;
-
-    sessionStorage.removeItem("usuario_logado");
-    var listUsuarios = getTabUsuarios();
-
-    for (var i = 0; i < listUsuarios.length; i++) {
-        if(listUsuarios[i].login.toUpperCase() == username.toUpperCase()) {
-            if(listUsuarios[i].senha == password) {
-                login(listUsuarios[i]);
-                return;
-            }
-        }
-    }
-    console.log("Login inválido");
-    alert("Login inválido");
+    let url = "login.php?action=validarLogin&username=" + username + "&password=" + password;
+    console.log("js - chamando validar login : " + url);
+    ajaxCall(url, login);
 }
 
 function preparaInsertAlterProduto() {
