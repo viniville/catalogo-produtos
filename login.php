@@ -7,6 +7,7 @@ if(@$_REQUEST['action'] == "validarLogin") { // Valida login
     echo validarLogin($username, $password);
 }
 
+
 function validarLogin($login, $senha) {
     $con = conectaDB();
     $usuario = null;

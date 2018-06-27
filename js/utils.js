@@ -108,6 +108,7 @@ function addProduto(nome, marca, preco, saldo) {
                   });
 }
 
+
 function removeProduto(buttonRemove) {
     var idItem = buttonRemove.getAttribute("data-id");
     var listProdutos = getTabProdutos();

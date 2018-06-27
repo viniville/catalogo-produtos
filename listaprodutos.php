@@ -8,6 +8,7 @@ if(@$_REQUEST['action'] == "listarProdutos") { // Valida login
     echo buscarPorId($idItem);
 }
 
+
 function listarProdutos() {
     $con = conectaDB();
     $produtos = array();
