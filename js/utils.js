@@ -57,42 +57,6 @@ function logoff() {
     window.location="index.html";
 }
 
-/* ***************************************** */
-function guid() {
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-}
-  
-function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-               .toString(16).substring(1);
-}
-
-function setTabUsuarios(usuarios) {
-    sessionStorage.setItem("tab_usuarios", JSON.stringify(usuarios));
-}
-
-function getTabUsuarios() {
-    var jsonUsuarios = sessionStorage.getItem("tab_usuarios");
-    return JSON.parse(jsonUsuarios);    
-}
-
-function addUsuario(nome, login, senha) {
-    var str = '{"nome":"%NOME%", "login":"%LOGIN%", "senha":"%SENHA%"}';
-    str = str.replace("%NOME%", nome);
-    str = str.replace("%LOGIN%", login);
-    str = str.replace("%SENHA%", senha);
-    var usuario = JSON.parse(str);
-    var listUsuarios = getTabUsuarios();
-    listUsuarios.push(usuario);
-    setTabUsuarios(listUsuarios);
-    return listUsuarios.length;    
-}
-
-function setTabProdutos(produtos) {
-    sessionStorage.setItem("tab_produtos", JSON.stringify(produtos));
-}
-
 function consultaTabelaProdutos(funcCallback) {
     let url = "listaprodutos.php?action=listarProdutos";
     console.log("js - chamando listaprodutos : " + url);
@@ -136,24 +100,8 @@ function showAddProduto() {
 }
 
 function inicializaApp() {
-    //registra no sessionStorage os dados utilizados na aplicação
-    /*
-    var usuarios = '[ {"nome":"Vinicius Ville", "login":"vinicius", "senha":"1234"},'+
-                      '  {"nome":"Joao da Silva", "login":"joao", "senha":"1234"},'+
-                      '  {"nome":"Maria da Silva", "login":"maria", "senha":"1234"},'+
-                      '  {"nome":"Josefa Gonçalvez", "login":"josefa", "senha":"1234"},'+
-                      '  {"nome":"Gustavo Martins", "login":"gustavo", "senha":"1234"}]';
-    
-     var produtos = '[ {"id":"96123b43-01b8-3265-b5be-0568d3305bc2", "nome":"Produto A", "marca":"Marca X", "preco":"10.20", "saldo":100},'+
-                      '  {"id":"f4512232-1b02-2017-f191-6c4f9db26580", "nome":"Produto B", "marca":"Marca X", "preco":"10.20", "saldo":"80"},'+
-                      '  {"id":"145e5a99-4463-778b-92d6-5393a4a9fa17", "nome":"Produto C", "marca":"Marca X", "preco":"10.20", "saldo":"50"},'+
-                      '  {"id":"58ae66c5-b1d5-bc11-64ca-4c380182776d", "nome":"Produto D", "marca":"Marca X", "preco":"10.20", "saldo":"40"},'+
-                      '  {"id":"9ad16d72-d827-b7b0-8843-1823bcbc85df", "nome":"Produto E", "marca":"Marca X", "preco":"10.20", "saldo":"30"}]';
-                      
-    setTabUsuarios(JSON.parse(usuarios));
-    setTabProdutos(JSON.parse(produtos));
-    */
     sessionStorage.removeItem("usuario_logado"); 
+    sessionStorage.removeItem("produto_alteracao");
 }
 
 
