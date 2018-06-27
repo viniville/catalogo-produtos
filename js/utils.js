@@ -106,19 +106,18 @@ function addProduto(nome, marca, preco, saldo) {
                         window.location="listaprodutos.html"; 
                         return;
                   });
+    return;
 }
-
 
 function removeProduto(buttonRemove) {
     var idItem = buttonRemove.getAttribute("data-id");
-    var listProdutos = getTabProdutos();
-    for (var i = 0; i < listProdutos.length; i++) {
-        if(listProdutos[i].id.toUpperCase() == idItem.toUpperCase().trim()) {
-            listProdutos.splice(i, 1);
-            setTabProdutos(listProdutos);
-            break;
-        }
-    }
+    let url = "insaltproduto.php?action=delete&id="+idItem;
+    ajaxCall(url, function(retorno){
+        console.log("retornou delete produto" + retorno);
+        window.location="listaprodutos.html"; 
+        return;
+    });
+    return;
 }
 
 function showEditProdutoCallback(produto) {

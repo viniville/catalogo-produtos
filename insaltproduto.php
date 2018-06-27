@@ -7,15 +7,16 @@ if(@$_REQUEST['action'] == "update") {
     $marca = @$_REQUEST['marca'];
     $preco = @$_REQUEST['preco'];
     $saldo = @$_REQUEST['saldo'];
-
     echo update($id, $nome, $marca, $preco, $saldo);
 } else if(@$_REQUEST['action'] == "insert") { 
     $nome = @$_REQUEST['nome'];
     $marca = @$_REQUEST['marca'];
     $preco = @$_REQUEST['preco'];
     $saldo = @$_REQUEST['saldo'];
-
-    echo insert($id, $nome, $marca, $preco, $saldo);
+    echo insert($nome, $marca, $preco, $saldo);
+} else if(@$_REQUEST['action'] == "delete") { 
+    $id = @$_REQUEST['id'];
+    echo delete($id);
 }
 
 function update($id, $nome, $marca, $preco, $saldo) {
@@ -39,6 +40,14 @@ function insert($nome, $marca, $preco, $saldo) {
     $saldo = $con->real_escape_string($saldo);
     mysqli_query($con,"INSERT INTO produtos (nome, marca, preco, saldo) VALUES ('$nome', '$marca', $preco, $saldo)");
     $con->close();
-    return buscarPorId($id);
+    return true;
 }
+
+function delete($id) {
+    $con = conectaDB();
+    mysqli_query($con,"DELETE FROM produtos WHERE id=$id");
+    $con->close();
+    return true;
+}
+
 ?>

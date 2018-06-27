@@ -17,6 +17,7 @@ function listarProdutos() {
         $produtos[] = $row;
     }
     $json = json_encode($produtos);
+    mysqli_free_result($result);
     mysqli_close($con);
     return $json;
 }
@@ -25,6 +26,7 @@ function buscarPorId($id) {
     $con = conectaDB();
     $result = mysqli_query($con,"SELECT * FROM produtos WHERE id=$id");
     $json = json_encode(mysqli_fetch_assoc($result));
+    mysqli_free_result($result);
     mysqli_close($con);
     return $json;
 }
