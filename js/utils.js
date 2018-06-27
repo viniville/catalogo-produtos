@@ -1,3 +1,6 @@
+/**
+ * AJAX 
+ */
 function ajaxCall(stringCall, callback){
     var httpRequest = new XMLHttpRequest;
         
@@ -12,6 +15,49 @@ function ajaxCall(stringCall, callback){
         httpRequest.send();
 }
 
+function jsonIsValid(stringJson) {
+    if (/^[\],:{}\s]*$/.test(stringJson.replace(/\\["\\\/bfnrtu]/g, '@').
+                            replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+                            replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+        return true;
+    } 
+    return false;
+}
+
+/*********************************************
+ *      Funções da pagina de login/index
+ *********************************************/
+function efetuarLogin(usuario) {
+    
+    sessionStorage.removeItem("usuario_logado");
+
+    if(usuario !== 'null' && jsonIsValid(usuario)) {
+        //sessionStorage.setItem("usuario_logado", JSON.stringify(usuario));
+        sessionStorage.setItem("usuario_logado", usuario);
+        console.log("Login realizado com sucesso! " + usuario);
+        window.location="listaprodutos.html";
+    } else {
+        console.log("Login inválido. Usuário e/ou senha incorretos.");
+        alert("Login inválido. Usuário e/ou senha incorretos.");
+    }
+
+}
+
+function validarLogin() {
+    let username = document.getElementById('usuario').value;
+    let password = document.getElementById('senha').value;
+    let url = "login.php?action=validarLogin&username=" + username + "&password=" + password;
+    console.log("js - chamando validar login : " + url);
+    ajaxCall(url, efetuarLogin);
+}
+
+function logoff() {
+    sessionStorage.removeItem("usuario_logado");
+    console.log("Logoff realizado com sucesso!");
+    window.location="index.html";
+}
+
+/* ***************************************** */
 function guid() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
             s4() + '-' + s4() + s4() + s4();
@@ -47,24 +93,19 @@ function setTabProdutos(produtos) {
     sessionStorage.setItem("tab_produtos", JSON.stringify(produtos));
 }
 
-function getTabProdutos() {
-    var jsonProdutos = sessionStorage.getItem("tab_produtos");
-    return JSON.parse(jsonProdutos);    
+function consultaTabelaProdutos(funcCallback) {
+    let url = "listaprodutos.php?action=listarProdutos";
+    console.log("js - chamando listaprodutos : " + url);
+    ajaxCall(url, funcCallback);
 }
 
 function addProduto(nome, marca, preco, saldo) {
-    var str = '{"id":"%ID%", "nome":"%NOME%", "marca":"%MARCA%", "preco":"%PRECO%", "saldo":%SALDO%}';
-    var newUuid = guid();
-    str = str.replace("%ID%", newUuid.trim());
-    str = str.replace("%NOME%", nome);
-    str = str.replace("%MARCA%", marca);
-    str = str.replace("%PRECO%", preco);
-    str = str.replace("%SALDO%", saldo);
-    var produto = JSON.parse(str);
-    var listProdutos = getTabProdutos();
-    listProdutos.push(produto);
-    setTabProdutos(listProdutos);
-    return listProdutos.length;
+    let url = "insaltproduto.php?action=insert&nome="+encodeURI(nome)+"&marca="+encodeURI(marca)+"&preco="+encodeURI(preco)+"&saldo=" + +encodeURI(saldo);
+    ajaxCall(url, function(retorno){
+                        console.log("retornou insert produto" + retorno);
+                        window.location="listaprodutos.html"; 
+                        return;
+                  });
 }
 
 function removeProduto(buttonRemove) {
@@ -79,16 +120,14 @@ function removeProduto(buttonRemove) {
     }
 }
 
+function showEditProdutoCallback(produto) {
+    sessionStorage.setItem("produto_alteracao", produto);
+    window.location="insaltproduto.html";
+}
+
 function showEditProduto(buttonEdit) {
     var idItem = buttonEdit.getAttribute("data-id");
-    var listProdutos = getTabProdutos();
-    for (var i = 0; i < listProdutos.length; i++) {
-        if(listProdutos[i].id.toUpperCase() == idItem.toUpperCase().trim()) {
-            sessionStorage.setItem("produto_alteracao", JSON.stringify(listProdutos[i]));
-            break;
-        }
-    }
-    window.location="insaltproduto.html";
+    ajaxCall("listaprodutos.php?action=buscarPorId&id=" + idItem, showEditProdutoCallback);
 }
 
 function showAddProduto() {
@@ -98,6 +137,7 @@ function showAddProduto() {
 
 function inicializaApp() {
     //registra no sessionStorage os dados utilizados na aplicação
+    /*
     var usuarios = '[ {"nome":"Vinicius Ville", "login":"vinicius", "senha":"1234"},'+
                       '  {"nome":"Joao da Silva", "login":"joao", "senha":"1234"},'+
                       '  {"nome":"Maria da Silva", "login":"maria", "senha":"1234"},'+
@@ -112,29 +152,10 @@ function inicializaApp() {
                       
     setTabUsuarios(JSON.parse(usuarios));
     setTabProdutos(JSON.parse(produtos));
+    */
     sessionStorage.removeItem("usuario_logado"); 
 }
 
-function login(usuario) {
-    
-    sessionStorage.removeItem("usuario_logado");
-
-    if(usuario == null) {
-        console.log("Login inválido");
-        alert("Login inválido");
-    } else {
-        sessionStorage.setItem("usuario_logado", JSON.stringify(usuario));
-        console.log("Login realizado com sucesso! " + usuario);
-        window.location="listaprodutos.html";
-    }
-
-}
-
-function logoff() {
-    sessionStorage.removeItem("usuario_logado");
-    console.log("Logoff realizado com sucesso!");
-    window.location="index.html";
-}
 
 function validaSessaoAtiva() {
     var usuarioLogado = sessionStorage.getItem("usuario_logado");
@@ -143,14 +164,6 @@ function validaSessaoAtiva() {
         return false;
     }
     return true;
-}
-
-function validarLogin() {
-    let username = document.getElementById('usuario').value;
-    let password = document.getElementById('senha').value;
-    let url = "login.php?action=validarLogin&username=" + username + "&password=" + password;
-    console.log("js - chamando validar login : " + url);
-    ajaxCall(url, login);
 }
 
 function preparaInsertAlterProduto() {
@@ -169,6 +182,16 @@ function preparaInsertAlterProduto() {
     }
 }
 
+function updateProduto(id, nome, marca, preco, saldo) {
+    let url = "insaltproduto.php?action=update&id="+ id +"&nome="+encodeURI(nome)+"&marca="+encodeURI(marca)+"&preco="+encodeURI(preco)+"&saldo=" + +encodeURI(saldo);
+    ajaxCall(url, function(retorno){
+                        console.log("retornou update produto" + retorno);
+                        sessionStorage.removeItem("produto_alteracao"); 
+                        window.location="listaprodutos.html"; 
+                        return;
+                  });
+}
+
 function gravarInsAltProduto() {
     var idItem = document.getElementById("inputid").value;
     var nome = document.getElementById("inputnome").value;
@@ -177,26 +200,10 @@ function gravarInsAltProduto() {
     var saldo = document.getElementById("inputsaldo").value;
     
     if(idItem != undefined && idItem != "") {
-        var itemAlterado = false;
-        var listProdutos = getTabProdutos();
-        for (var i = 0; i < listProdutos.length; i++) {
-            if(listProdutos[i].id.toUpperCase() == idItem.toUpperCase().trim()) {
-                listProdutos[i].nome = nome;
-                listProdutos[i].marca = marca;
-                listProdutos[i].preco = preco;
-                listProdutos[i].saldo = saldo;
-                itemAlterado = true;
-                break;
-            }
-        }
-        if(itemAlterado) {
-            setTabProdutos(listProdutos);
-        }
-        sessionStorage.removeItem("produto_alteracao");
+        updateProduto(idItem, nome, marca, preco, saldo);
     } else {
         addProduto(nome, marca, preco, saldo);
     }
-    window.location="listaprodutos.html";
     return;
 }
 
@@ -206,9 +213,9 @@ function cancelarInsAltProduto() {
     return;
 }
 
-function getHtmlTableProdutos() {
+function carregaTabelaProdutos(strProdutos) {
+    var produtos = JSON.parse(strProdutos);
     var divitens = document.getElementById("itens");
-    var produtos = getTabProdutos();
     var htmlitens = "";
     for (var i = 0; i < produtos.length; i++) {
         var iditem = produtos[i].id.trim();
@@ -221,5 +228,9 @@ function getHtmlTableProdutos() {
                      ' <td>'+ produtos[i].saldo +'</td>' + 
                      ' </tr>';        
     }
-    divitens.innerHTML = htmlitens;
+    divitens.innerHTML = htmlitens;    
+}
+
+function getHtmlTableProdutos() {
+    consultaTabelaProdutos(carregaTabelaProdutos);
 }
